@@ -116,5 +116,5 @@ TODO
 
 ## Acknowledgments
 
-AWS documentation 
-Elastic Search Java SDK documentation
+AWS documentation.     
+Elastic Search Java SDK documentation.  
