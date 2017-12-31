@@ -1,13 +1,11 @@
-# Project Title
+## Search using AWS services
 
-This project demonstartes building a Spring Boot based API for a simple search functionality. The search is powered by AWS ElasticSearch. We the deploy the API on ElasticBeanstalk. Finally, we would place the API behind AWS API Gatewatay.
+This project demonstartes building a `Spring Boot` based API for a simple search functionality. The search is powered by AWS ElasticSearch. We explore deploying the API on ElasticBeanstalk & finally, place the API behind AWS API Gatewatay.
 
-A call to API is thus fronted by gateway which is protected by AWS IAM user. All the calls to API will need proper autrozations to be processed. 
+A call to API is thus fronted by gateway which is protected by AWS IAM user. All the calls to API will need proper authorization to be processed. 
 
+Please see the section on API call which explains more on how calls are actually made.
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
 
 ## Prerequisites
 AWS account
@@ -16,22 +14,82 @@ JDK
 Maven
 
 
-### Components
+## API calls
 
-We look at the modules of the API one by one :
+#### Elastic Search API call : 
+```
+curl -X POST \
+  https://search-pc-search-2stnwuev5f62c5omwl6e7oprum.us-west-1.es.amazonaws.com/pc-plan-data/_search \
+  -H 'Content-Type: application/json' \
+  -d '{
+"from" : 0, 
+"size" : 2,
+  "query" : {
+    "bool" : {
+      "must" : {
+        "match" : {
+          "SPONS_DFE_MAIL_US_STATE" : {
+            "query" : "TX"
+          }
+        }
+      }
+    }
+  }
+}
+'
+```
 
-pom.xml - This is where we start.
+#### Call to API, which internally calls elastic search: 
 
-## Running the tests
-
+```
+curl -X GET \
+  'http://pc-search-env.us-west-1.elasticbeanstalk.com/plan/?sponsor=MAVERICK&state=NY' \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json'
+  ```
+ 
+ #### API call via AWS gateway:
+ 
+ ```
+ curl -X GET \
+  'https://s9ujgpl5cl.execute-api.us-west-1.amazonaws.com/dev/plans/?state=CA' \
+  -H 'Authorization: AWS4-HMAC-SHA256 Credential=AKIAJ4PQJE5NU5B7B6LQ/20171231/us-west-1/execute-api/aws4_request, SignedHeaders=content-type;host;x-amz-date, Signature=d69335f5029795d8431a2201243d43ec250319d5b2ca78230d04b2274b32ce56' \
+  -H 'Content-Type: application/json' \
+  -H 'X-Amz-Date: 20171231T073119Z'
+ ```
+ 
+ ## Running the tests
 Run the Junit tests via IDE or CLI.
 
 
-
 ## Deployment
+TODO
 
-Add additional notes about how to deploy this on a live system
 
+## Components
+
+`pom.xml` decalres Spring boot starter as the parent pom which gets us most of required dependencies. 
+
+```
+<parent>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-parent</artifactId>
+  <version>1.5.9.RELEASE</version>
+  <relativePath/> 
+</parent>
+
+```
+
+#### Libarries used :   
+`spring-boot-starter-web`   - to get support of all spring web related annotations and functionalities.   
+`spring-boot-starter-test`   - to get all depedncoes for writing unit tests.   
+`spring-boot-starter-actuator`   - to get boot actuator that exposes helpful endpoints.       
+`spring-boot-starter-data-elasticsearch`   - to get elastic search JAVA libs for writing ES DSL.  
+
+`jackson-databind`  - to bind JSON reponses to our API.   
+`lombok`   - helper lib for generating less code in POJO's.   
+`opencsv`   - open source lib for parsing CSV files (our data is to be indexed is in CSV format).   
+`commons-httpclient`   - some helper http libs.   
 
 
 ## Built With
