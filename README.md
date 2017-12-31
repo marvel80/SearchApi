@@ -1,23 +1,19 @@
 ## Search using AWS services
 
-This project demonstartes building a `Spring Boot` based API for a simple search functionality. The search is powered by AWS ElasticSearch. We explore deploying the API on ElasticBeanstalk & finally, place the API behind AWS API Gatewatay.
+This project demonstrates building a `Spring Boot` based API for a simple search functionality. The search is powered by AWS ElasticSearch. We explore deploying the API on ElasticBeanstalk & finally, place the API behind AWS API Gateway.
 
 A call to API is thus fronted by gateway which is protected by AWS IAM user. All the calls to API will need proper authorization to be processed. 
 
 Please see the section on API call which explains more on how calls are actually made.
 
 
-## Prerequisites
-AWS account
-IDE
-JDK
-Maven
-
-
 ## API calls
 
 #### Elastic Search API call : 
+A sample call to search indexed documents , calling the ES directly on index `pc-plan-data`,  vis ES API's. Note how we have constructed a `bool query` in the body of the request.
+
 ```
+
 curl -X POST \
   https://search-pc-search-2stnwuev5f62c5omwl6e7oprum.us-west-1.es.amazonaws.com/pc-plan-data/_search \
   -H 'Content-Type: application/json' \
@@ -40,7 +36,7 @@ curl -X POST \
 ```
 
 #### Call to API, which internally calls elastic search: 
-
+Call to our API using query parameters that constructs the appropriate ES query based on parameters.
 ```
 curl -X GET \
   'http://pc-search-env.us-west-1.elasticbeanstalk.com/plan/?sponsor=MAVERICK&state=NY' \
@@ -49,7 +45,7 @@ curl -X GET \
   ```
  
  #### API call via AWS gateway:
- 
+ The same call as above, but now the URL is of API Gateway & thereby the calls need to have `Authorization` header. 
  ```
  curl -X GET \
   'https://s9ujgpl5cl.execute-api.us-west-1.amazonaws.com/dev/plans/?state=CA' \
@@ -58,6 +54,20 @@ curl -X GET \
   -H 'X-Amz-Date: 20171231T073119Z'
  ```
  
+ Call without this header will result  : in `403` errors, with folllwing messsage : 
+
+ ```
+ {
+    "message": "Missing Authentication Token"
+}
+```
+ 
+## Prerequisites
+- AWS account   
+- JDK    
+- Maven    
+
+
  ## Running the tests
 Run the Junit tests via IDE or CLI.
 
@@ -68,7 +78,7 @@ TODO
 
 ## Components
 
-`pom.xml` decalres Spring boot starter as the parent pom which gets us most of required dependencies. 
+`pom.xml` declares Spring boot starter as the parent pom which gets us most of required dependencies. 
 
 ```
 <parent>
@@ -80,13 +90,13 @@ TODO
 
 ```
 
-#### Libarries used :   
+#### Libraries used :   
 `spring-boot-starter-web`   - to get support of all spring web related annotations and functionalities.   
-`spring-boot-starter-test`   - to get all depedncoes for writing unit tests.   
+`spring-boot-starter-test`   - to get all dependencies for writing unit tests.   
 `spring-boot-starter-actuator`   - to get boot actuator that exposes helpful endpoints.       
 `spring-boot-starter-data-elasticsearch`   - to get elastic search JAVA libs for writing ES DSL.  
 
-`jackson-databind`  - to bind JSON reponses to our API.   
+`jackson-databind`  - to bind JSON responses to our API.   
 `lombok`   - helper lib for generating less code in POJO's.   
 `opencsv`   - open source lib for parsing CSV files (our data is to be indexed is in CSV format).   
 `commons-httpclient`   - some helper http libs.   
