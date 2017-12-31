@@ -43,7 +43,7 @@ Add additional notes about how to deploy this on a live system
 
 ## Authors
 
-* **Ankur Bhat** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Ankur Bhat** - *Initial work*
 
 
 ## Acknowledgments
