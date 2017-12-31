@@ -16,8 +16,8 @@ public class IndexFileGenerator {
 
 	private static IndexDocumentMapper documentMapper;
 
-	private static String FILE_IN = "/Users/nehagarg/Documents/personal capital/F_5500_2016_Latest/f_5500_2016_latest.csv";
-	private static String FILE_OUT = "/Users/nehagarg/Documents/personal capital/F_5500_2016_Latest/out-large";
+	private static String FILE_IN = "/Users/ng/Documents/pcl/search-data/latest.csv";
+	private static String FILE_OUT = "/Users/ng/Documents/pc/search-data/out-large";
 	private static String FORMAT = ".json";
 
 	public static void main(String[] args) {
